@@ -1,0 +1,77 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MedCore Command Center</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="grain"></div>
+  <div class="orb orb-a"></div>
+  <div class="orb orb-b"></div>
+
+  <aside class="sidebar">
+    <a class="brand" href="#overview" data-route="overview" aria-label="MedCore overview">
+      <span class="brand-mark">MC</span>
+      <span>
+        <strong>MedCore</strong>
+        <small>Clinical Command Center</small>
+      </span>
+    </a>
+
+    <nav class="nav" aria-label="Primary navigation">
+      <button class="nav-link active" data-route="overview"><span>01</span>Overview</button>
+      <button class="nav-link" data-route="doctors"><span>02</span>Doctors</button>
+      <button class="nav-link" data-route="patients"><span>03</span>Patients</button>
+      <button class="nav-link" data-route="nurses"><span>04</span>Nurses</button>
+      <button class="nav-link" data-route="appointments"><span>05</span>Appointments</button>
+      <button class="nav-link" data-route="departments"><span>06</span>Departments</button>
+      <button class="nav-link" data-route="records"><span>07</span>Records</button>
+      <button class="nav-link" data-route="reports"><span>08</span>Reports</button>
+    </nav>
+
+    <section class="side-status">
+      <div class="live-dot"></div>
+      <p>Demo hospital online</p>
+      <strong id="systemStarted">Loading...</strong>
+      <small>In-memory C# OOP system</small>
+    </section>
+  </aside>
+
+  <main class="shell">
+    <header class="topbar">
+      <div>
+        <p class="kicker">Baku Clinical Hospital</p>
+        <h1>MedCore hospital management system.</h1>
+      </div>
+      <div class="topbar-card">
+        <small>Current day</small>
+        <strong id="todayLabel">--</strong>
+      </div>
+    </header>
+
+    <section id="toast" class="toast" aria-live="polite"></section>
+    <section id="content" class="workspace"></section>
+  </main>
+
+  <aside id="drawer" class="drawer" aria-hidden="true">
+    <button class="drawer-close" type="button" aria-label="Close details">Close</button>
+    <div id="drawerBody"></div>
+  </aside>
+  <div id="drawerShade" class="drawer-shade"></div>
+
+  <template id="loadingTemplate">
+    <div class="loading">
+      <span></span>
+      <p>Loading clinical workspace...</p>
+    </div>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
+

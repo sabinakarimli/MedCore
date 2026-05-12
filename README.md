@@ -1,121 +1,140 @@
-<div align="center">
+﻿<div align="center">
 
-  <img src="https://readme-typing-svg.demolab.com?font=Segoe+UI&weight=800&size=34&duration=2600&pause=850&color=16A34A&center=true&vCenter=true&width=950&lines=MedCore+Hospital+Management+System;Console-Based+C%23+OOP+Project;Doctors+%E2%80%A2+Patients+%E2%80%A2+Nurses+%E2%80%A2+Appointments+%E2%80%A2+Reports" alt="MedCore animated title" />
+# MedCore Hospital Management System
 
-  <p>
-    <b>A clean, feature-rich hospital management system built with C# and object-oriented programming.</b>
-  </p>
+**A professional ASP.NET Core web dashboard for a C# OOP hospital management system.**
 
-  <p>
-    <img src="https://img.shields.io/badge/.NET-8.0-512BD4?style=for-the-badge&logo=dotnet&logoColor=white" alt=".NET 8" />
-    <img src="https://img.shields.io/badge/Language-C%23-239120?style=for-the-badge&logo=csharp&logoColor=white" alt="C#" />
-    <img src="https://img.shields.io/badge/App-Console-111827?style=for-the-badge&logo=windows-terminal&logoColor=white" alt="Console App" />
-    <img src="https://img.shields.io/badge/Storage-In--Memory-0EA5E9?style=for-the-badge" alt="In-memory storage" />
-  </p>
+![.NET](https://img.shields.io/badge/.NET-8.0-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
+![C#](https://img.shields.io/badge/C%23-Backend-239120?style=for-the-badge&logo=csharp&logoColor=white)
+![ASP.NET Core](https://img.shields.io/badge/ASP.NET_Core-Web_App-0B6F5B?style=for-the-badge)
+![UI](https://img.shields.io/badge/UI-Responsive_Dashboard-F1B75D?style=for-the-badge)
 
-  <p>
-    <a href="#-overview">Overview</a> •
-    <a href="#-features">Features</a> •
-    <a href="#-architecture">Architecture</a> •
-    <a href="#-project-structure">Structure</a> •
-    <a href="#-run-the-project">Run</a> •
-    <a href="#-oop-concepts">OOP Concepts</a>
-  </p>
+[Overview](#overview) | [Features](#features) | [What Changed](#what-changed) | [Project Structure](#project-structure) | [Run](#run-the-project) | [OOP Concepts](#oop-concepts)
 
 </div>
 
 ---
 
-## 🏥 Overview
+## Overview
 
-**MedCore Hospital Management System** is a console-based hospital administration project designed to demonstrate strong **C# OOP architecture** through a realistic healthcare workflow.
+**MedCore** is a hospital management project built with **C#**, **.NET 8**, **ASP.NET Core**, and clean **object-oriented programming**.
 
-When the application starts, it creates a `HospitalService`, loads demo data through `SeedData.Populate()`, and opens an interactive menu where the user acts like a hospital administrator.
+The application provides a complete professional web UI for managing hospital operations while preserving a clean C# OOP domain model in the model and service layers.
 
-The system can manage:
+The system manages:
 
 | Module | Purpose |
 |---|---|
-| Doctor Management | Register doctors, view reports, search, schedules, and remove doctors |
-| Patient Management | Register patients, admit/discharge them, track critical status |
-| Nurse Management | Add nurses, filter by shift, assign ward tasks |
-| Appointment Management | Book appointments and control appointment status transitions |
+| Dashboard | Live hospital overview, KPI cards, capacity panels, appointment summaries |
+| Doctor Management | Register doctors, view doctor reports, inspect schedules, remove doctors |
+| Patient Management | Register patients, admit/discharge patients, track critical cases |
+| Nurse Management | Add nurses, view shift coverage, assign nurse tasks |
+| Appointment Management | Book appointments and update appointment workflow status |
 | Department Management | Create departments, assign doctors, track occupancy |
-| Medical Records | Add immutable patient records and view medical history |
-| Statistics & Reports | Generate live hospital-wide reports using LINQ |
+| Medical Records | Add patient records and review diagnosis/treatment history |
+| Reports | Staff totals, inpatients, appointment state counts, department occupancy |
 
-> Data is stored **in memory only**. It exists while the program is running and is cleared when the application closes. This is intentional for an OOP coursework/demo project.
-
----
-
-## ✨ Features
-
-<table>
-  <tr>
-    <td width="50%">
-      <h3>👨‍⚕️ Doctors</h3>
-      <ul>
-        <li>Automatic ID generation starting from <code>1000</code></li>
-        <li>Specialization, salary, service years, department</li>
-        <li>Doctor schedule with availability checks</li>
-        <li>Certifications and detailed reports</li>
-      </ul>
-    </td>
-    <td width="50%">
-      <h3>🧑‍🦽 Patients</h3>
-      <ul>
-        <li>Blood type, ward, allergies, insurance ID</li>
-        <li>Outpatient, inpatient, discharged, critical states</li>
-        <li>Admission and discharge business rules</li>
-        <li>Chronological medical history</li>
-      </ul>
-    </td>
-  </tr>
-  <tr>
-    <td width="50%">
-      <h3>💉 Nurses</h3>
-      <ul>
-        <li>Morning, evening, and night shifts</li>
-        <li>Ward assignment</li>
-        <li>RN / BSN qualification tracking</li>
-        <li>Task assignment and reporting</li>
-      </ul>
-    </td>
-    <td width="50%">
-      <h3>📅 Appointments</h3>
-      <ul>
-        <li>Doctor and patient validation</li>
-        <li>No double-booking for doctors</li>
-        <li>No duplicate same-day appointment for patients</li>
-        <li>Strict appointment status state machine</li>
-      </ul>
-    </td>
-  </tr>
-</table>
+> Data is stored in memory for demo/coursework purposes. It resets when the application restarts.
 
 ---
 
-## 🧠 System Flow
+## Features
+
+### Professional Web Dashboard
+
+- Responsive browser-based UI in `wwwroot`.
+- Sidebar navigation for all hospital modules.
+- KPI cards for doctors, nurses, patients, appointments, critical cases and records.
+- Searchable tables for staff, patients, appointments and records.
+- Detail drawer for doctor, patient, nurse, appointment and medical record reports.
+- Modern visual design with cards, status badges, occupancy bars and responsive layouts.
+
+### Doctors
+
+- Automatic ID generation.
+- Full name, age, phone, email, specialization, salary and years of service.
+- Department assignment through department workflows.
+- Schedule visibility through appointment bookings.
+- Doctor report drawer in the UI.
+- Remove doctor workflow that cancels future appointments when needed.
+
+### Patients
+
+- Patient registration with blood type, emergency contact, insurance and allergies.
+- Patient states: `Outpatient`, `Inpatient`, `Discharged`, `Critical`.
+- Admit and discharge actions from the UI.
+- Critical patient tracking.
+- Medical history connected to each patient.
+
+### Nurses
+
+- Nurse registration with ward, shift and qualification.
+- Shift types: `Morning`, `Evening`, `Night`.
+- Shift summary cards.
+- Task assignment from the UI.
+- Nurse detail reports.
+
+### Appointments
+
+- Appointment booking with doctor and patient validation.
+- Doctor double-booking protection.
+- Patient same-day duplicate appointment protection.
+- Status workflow:
+  - `Pending`
+  - `Confirmed`
+  - `InProgress`
+  - `Completed`
+  - `Cancelled`
+  - `NoShow`
+- Status updates from the dashboard.
+
+### Departments
+
+- Department creation with name, capacity, floor and phone extension.
+- Doctor assignment to departments.
+- Capacity limit enforcement.
+- Occupancy bars and team cards.
+
+### Medical Records
+
+- Records are added to patient history.
+- Record types include diagnosis, surgery, lab result, prescription, consultation and emergency.
+- Each record stores diagnosis, treatment, medication, notes and issuing doctor.
+- Records are shown in searchable tables and detail drawers.
+
+---
+
+## What Changed
+
+This version upgrades the project into a full web application:
+
+| Area | Change |
+|---|---|
+| Project type | ASP.NET Core web application using `Microsoft.NET.Sdk.Web` |
+| Entry point | `Program.cs` configures routing, APIs, static files and seed data |
+| UI | Added a complete responsive web dashboard under `wwwroot` |
+| API | Added endpoints for overview, doctors, patients, nurses, appointments, departments and records |
+| Reports | Added visual report cards and detail drawers |
+| JSON | Added string enum support for cleaner API requests |
+| README | Rewritten to describe the new web application accurately |
+
+---
+
+## Architecture
 
 ```mermaid
 flowchart TD
-    A["Program.cs starts"] --> B["Create HospitalService"]
-    B --> C["SeedData.Populate()"]
-    C --> D["Load demo doctors, nurses, patients, departments, appointments, records"]
-    D --> E["Display main console menu"]
-    E --> F{"User selects module"}
-    F --> G["Doctor Management"]
-    F --> H["Patient Management"]
-    F --> I["Nurse Management"]
-    F --> J["Appointment Management"]
-    F --> K["Department Management"]
-    F --> L["Medical Records"]
-    F --> M["Statistics & Reports"]
+    A[Browser UI in wwwroot] --> B[ASP.NET Core Minimal API]
+    B --> C[HospitalService]
+    C --> D[Models]
+    C --> E[SeedData]
+    D --> F[Doctor]
+    D --> G[Patient]
+    D --> H[Nurse]
+    D --> I[Appointment]
+    D --> J[Department]
+    D --> K[MedicalRecord]
 ```
-
----
-
-## 🧩 Architecture
 
 ```mermaid
 classDiagram
@@ -184,29 +203,9 @@ classDiagram
         +GenerateReport()
     }
 
-    class ISchedulable {
-        <<interface>>
-        +IsAvailable(DateTime)
-        +AddToSchedule(DateTime)
-        +RemoveFromSchedule(DateTime)
-        +GetScheduleSummary()
-    }
-
-    class IReportable {
-        <<interface>>
-        +GenerateReport()
-    }
-
     Person <|-- Doctor
     Person <|-- Patient
     Person <|-- Nurse
-    ISchedulable <|.. Doctor
-    IReportable <|.. Doctor
-    IReportable <|.. Patient
-    IReportable <|.. Nurse
-    IReportable <|.. Appointment
-    IReportable <|.. MedicalRecord
-    IReportable <|.. Department
     Appointment --> Doctor
     Appointment --> Patient
     MedicalRecord --> Doctor
@@ -215,189 +214,151 @@ classDiagram
 
 ---
 
-## 🔄 Appointment State Machine
+## API Endpoints
 
-```mermaid
-stateDiagram-v2
-    [*] --> Pending
-    Pending --> Confirmed: Confirm()
-    Pending --> Cancelled: Cancel()
-    Confirmed --> InProgress: Start()
-    Confirmed --> Completed: Complete()
-    Confirmed --> NoShow: MarkNoShow()
-    Confirmed --> Cancelled: Cancel()
-    InProgress --> Completed: Complete()
-    InProgress --> Cancelled: Cancel()
-    Completed --> [*]
-    Cancelled --> [*]
-    NoShow --> [*]
-```
-
-Status transitions are protected by business rules. For example, a completed appointment cannot be cancelled, and an appointment can only start after it has been confirmed.
+| Method | Endpoint | Purpose |
+|---|---|---|
+| `GET` | `/api/overview` | Dashboard counts, upcoming appointments, department summaries |
+| `GET` | `/api/doctors` | List doctors |
+| `POST` | `/api/doctors` | Add doctor |
+| `DELETE` | `/api/doctors/{id}` | Remove doctor |
+| `GET` | `/api/patients` | List patients |
+| `POST` | `/api/patients` | Register patient |
+| `POST` | `/api/patients/{id}/admit` | Admit patient |
+| `POST` | `/api/patients/{id}/discharge` | Discharge patient |
+| `GET` | `/api/nurses` | List nurses |
+| `POST` | `/api/nurses` | Add nurse |
+| `POST` | `/api/nurses/{id}/tasks` | Assign nurse task |
+| `GET` | `/api/appointments` | List appointments |
+| `POST` | `/api/appointments` | Book appointment |
+| `POST` | `/api/appointments/{id}/status` | Update appointment status |
+| `GET` | `/api/departments` | List departments |
+| `POST` | `/api/departments` | Create department |
+| `POST` | `/api/departments/assign-doctor` | Assign doctor to department |
+| `POST` | `/api/records` | Add medical record |
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```text
 HospitalApp/
-├── Data/
-│   └── SeedData.cs
-├── Helpers/
-│   └── ConsoleUI.cs
-├── Interfaces/
-│   ├── IReportable.cs
-│   └── ISchedulable.cs
-├── Models/
-│   ├── Appointment.cs
-│   ├── Department.cs
-│   ├── Doctor.cs
-│   ├── MedicalRecord.cs
-│   ├── Nurse.cs
-│   ├── Patient.cs
-│   └── Person.cs
-├── Services/
-│   └── HospitalService.cs
-├── Program.cs
-├── HospitalApp.csproj
-└── HospitalApp.sln
+|-- Data/
+|   |-- SeedData.cs
+|-- Interfaces/
+|   |-- IReportable.cs
+|   |-- ISchedulable.cs
+|-- Models/
+|   |-- Appointment.cs
+|   |-- Department.cs
+|   |-- Doctor.cs
+|   |-- MedicalRecord.cs
+|   |-- Nurse.cs
+|   |-- Patient.cs
+|   |-- Person.cs
+|-- Properties/
+|   |-- launchSettings.json
+|-- Services/
+|   |-- HospitalService.cs
+|-- wwwroot/
+|   |-- index.html
+|   |-- styles.css
+|   |-- app.js
+|-- HospitalApp.csproj
+|-- HospitalApp.sln
+|-- Program.cs
+|-- README.md
 ```
 
 ### Folder Responsibilities
 
 | Folder | Responsibility |
 |---|---|
-| `Models` | Domain objects such as `Doctor`, `Patient`, `Appointment`, and `Department` |
-| `Interfaces` | Shared contracts like reporting and scheduling |
-| `Services` | Core business logic and in-memory collections |
+| `Models` | Domain classes and business entities |
+| `Interfaces` | Shared contracts for reporting and scheduling |
+| `Services` | In-memory hospital business logic |
 | `Data` | Demo seed data loaded at startup |
-| `Helpers` | Console UI, prompts, tables, colors, progress bars |
-| Root files | App entry point and .NET project configuration |
+| `wwwroot` | Browser UI: HTML, CSS and JavaScript |
+| `Properties` | Local launch profile |
+| Root files | ASP.NET Core app entry point, project file, solution and documentation |
 
 ---
 
-## 📌 Important Files
+## Important Files
 
-<details>
-<summary><b>Program.cs</b> — Application entry point and menus</summary>
-
-`Program.cs` starts the application, creates the hospital service, loads seed data, and controls the main menu loop. It contains separate menu flows for doctors, patients, nurses, appointments, departments, medical records, and statistics.
-
-</details>
-
-<details>
-<summary><b>HospitalService.cs</b> — Business logic layer</summary>
-
-`HospitalService` is the central service of the project. It stores private in-memory lists for doctors, patients, nurses, appointments, and departments. It provides methods for adding, searching, filtering, removing, booking, assigning, and reporting.
-
-</details>
-
-<details>
-<summary><b>Person.cs</b> — Abstract base class</summary>
-
-`Person` contains shared properties such as `Id`, `FullName`, `Age`, `Phone`, `Email`, and `RegisteredAt`. It is inherited by `Doctor`, `Patient`, and `Nurse`, which keeps common logic in one place.
-
-</details>
-
-<details>
-<summary><b>Appointment.cs</b> — Status rules and scheduling</summary>
-
-`Appointment` connects a doctor and patient. It also controls the appointment lifecycle with methods like `Confirm()`, `Start()`, `Complete()`, `Cancel()`, and `MarkNoShow()`.
-
-</details>
-
-<details>
-<summary><b>SeedData.cs</b> — Ready-to-use demo hospital</summary>
-
-`SeedData` loads sample departments, doctors, nurses, patients, appointments, and medical records so the system is usable immediately after launch.
-
-</details>
+| File | Purpose |
+|---|---|
+| `Program.cs` | Configures ASP.NET Core, loads seed data, serves static files and maps API endpoints |
+| `Services/HospitalService.cs` | Central business service for all hospital operations |
+| `Data/SeedData.cs` | Creates demo departments, doctors, nurses, patients, appointments and records |
+| `wwwroot/index.html` | Main dashboard layout |
+| `wwwroot/styles.css` | Professional responsive UI design |
+| `wwwroot/app.js` | Dashboard rendering, forms, API calls, search and detail drawers |
+| `Models/*.cs` | OOP domain model |
 
 ---
 
-## 🚀 Run the Project
+## Run the Project
 
 ### Requirements
 
-- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
-- Visual Studio, Visual Studio Code, or any terminal with .NET CLI
+- .NET 8 SDK
+- Visual Studio, Visual Studio Code, Rider, or .NET CLI
 
 ### Run with .NET CLI
 
 ```bash
 dotnet restore
-dotnet run
+dotnet run --urls http://localhost:5000
+```
+
+Open the app:
+
+```text
+http://localhost:5000
 ```
 
 ### Run with Visual Studio
 
-1. Open `HospitalApp.sln`
-2. Set `HospitalApp` as the startup project
-3. Press `F5` or click **Run**
+1. Open `HospitalApp.sln`.
+2. Set `HospitalApp` as the startup project.
+3. Run the project.
+4. Open the displayed localhost URL in a browser.
 
 ---
 
-## 🖥️ Console Experience
-
-```text
-MAIN MENU
-1. Doctor Management
-2. Patient Management
-3. Nurse Management
-4. Appointment Management
-5. Department Management
-6. Medical Records
-7. Statistics & Reports
-0. Exit System
-```
-
-Example doctor report:
-
-```text
-DOCTOR REPORT
-ID            : #1000
-Name          : James Hartwell
-Specialization: Cardiology
-Salary        : $8,500.00
-Appointments  : 2
-Certifications: FACC, FESC
-```
-
----
-
-## 🧪 Validation & Business Rules
+## Validation & Business Rules
 
 | Area | Rule |
 |---|---|
-| Doctor age | Must be between `18` and `80` |
-| Patient age | Must be between `0` and `120` |
+| Person age | Must be valid for the domain model |
+| Phone | Cannot be empty |
 | Salary | Cannot be negative |
 | Department name | Must be unique |
-| Department capacity | Must be between `1` and `50` |
-| Doctor booking | A doctor cannot have two appointments in the same hour |
-| Patient booking | A patient cannot have more than one appointment on the same day |
+| Department capacity | Must be positive |
+| Doctor appointment | A doctor cannot be booked twice in the same hour |
+| Patient appointment | A patient cannot have more than one active appointment on the same day |
+| Appointment state | Status transitions are controlled by methods like `Confirm`, `Start`, `Complete`, `Cancel` |
 | Discharge | Only admitted patients can be discharged |
-| Records | Medical records are kept as patient history |
+| Records | Medical records are stored as patient history |
 
 ---
 
-## 🧬 OOP Concepts
+## OOP Concepts
 
 | Concept | Where It Appears | Why It Matters |
 |---|---|---|
-| Abstraction | `Person` abstract class | Defines shared human identity without allowing direct `Person` objects |
-| Encapsulation | Private lists and `AsReadOnly()` | Protects collections from outside modification |
-| Inheritance | `Doctor`, `Patient`, `Nurse` inherit `Person` | Reuses common code and keeps the model clean |
-| Polymorphism | `GetInfo()` and `GenerateReport()` | Same method name, different behavior per class |
-| Interfaces | `ISchedulable`, `IReportable` | Defines contracts for scheduling and reports |
-| Enums | `PatientStatus`, `ShiftType`, `AppointmentStatus`, `RecordType` | Keeps domain states readable and safe |
-| State Machine | Appointment lifecycle | Enforces realistic workflow transitions |
-| LINQ | Filtering, ordering, grouping | Makes collection queries concise and expressive |
-| Exception Handling | `try/catch` around operations | Prevents crashes and gives friendly error messages |
+| Abstraction | `Person` abstract class | Shared identity for doctors, patients and nurses |
+| Encapsulation | Private collections in `HospitalService` and model classes | Protects internal state |
+| Inheritance | `Doctor`, `Patient`, `Nurse` inherit `Person` | Reuses common fields and behavior |
+| Polymorphism | `GetInfo()` and `GenerateReport()` | Different report behavior per entity |
+| Interfaces | `IReportable`, `ISchedulable` | Defines shared capabilities |
+| Enums | Appointment, patient, nurse shift and record statuses | Keeps state safe and readable |
+| LINQ | Filtering, grouping, searching and reporting | Clean data queries over in-memory collections |
 
 ---
 
-## 📊 Demo Data Loaded on Startup
+## Demo Data
 
 | Data Type | Count |
 |---|---:|
@@ -408,50 +369,35 @@ Certifications: FACC, FESC
 | Appointments | 5 |
 | Medical Records | 5 |
 
-The demo dataset includes cardiology, neurology, surgery, pediatrics, emergency care, admitted patients, critical patients, certifications, assigned nurse tasks, and confirmed appointments.
+Demo data includes cardiology, neurology, surgery, pediatrics, emergency care, admitted patients, critical patients, certifications, nurse tasks and confirmed appointments.
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
-```mermaid
-mindmap
-  root((MedCore HMS))
-    C# Console App
-      Menus
-      Validation
-      Reports
-    .NET 8
-      CLI Run
-      Visual Studio Support
-    OOP
-      Abstraction
-      Encapsulation
-      Inheritance
-      Polymorphism
-    In-Memory Storage
-      Lists
-      LINQ Queries
-      Seed Data
-```
+| Layer | Technology |
+|---|---|
+| Backend | C#, .NET 8, ASP.NET Core Minimal API |
+| Frontend | HTML, CSS, JavaScript |
+| Architecture | OOP domain model + service layer |
+| Data | In-memory collections with seed data |
+| Styling | Responsive custom CSS dashboard |
 
 ---
 
-## 🌟 Why This Project Is Strong
+## Why This Project Is Strong
 
-- It uses real domain entities instead of simple demo classes.
-- It separates responsibilities into folders and layers.
-- It contains meaningful business rules.
-- It demonstrates all major OOP principles clearly.
-- It includes validation, reports, searching, filtering, and state transitions.
-- It is easy to explain in a presentation or defend in an OOP exam.
+- It keeps a clear C# OOP domain model.
+- It upgrades the user experience into a real web dashboard.
+- It has meaningful hospital workflows and validation rules.
+- It demonstrates inheritance, encapsulation, interfaces, enums, state machines and LINQ.
+- It is easy to present because the UI now shows every major module visually.
 
 ---
 
 <div align="center">
 
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:16A34A,100:0EA5E9&height=120&section=footer&text=MedCore%20HMS&fontSize=32&fontColor=ffffff&animation=twinkling" alt="Footer wave" />
-
-  <p><b>Built with C#, .NET 8, and clean object-oriented design.</b></p>
+**MedCore HMS - C# OOP hospital management with a professional ASP.NET Core web dashboard.**
 
 </div>
+
