@@ -1,12 +1,23 @@
 ﻿using HospitalApp.Data;
 using HospitalApp.Models;
 using HospitalApp.Services;
+using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "MedCore Hospital API",
+        Version = "v1",
+        Description = "Hospital management REST API for the MedCore (HospitalApp) demo system."
+    });
 });
 builder.Services.AddSingleton(_ =>
 {
@@ -16,6 +27,13 @@ builder.Services.AddSingleton(_ =>
 });
 
 var app = builder.Build();
+
+app.UseSwagger();
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "MedCore Hospital API v1");
+    options.RoutePrefix = "swagger";
+});
 
 app.UseDefaultFiles();
 app.UseStaticFiles();
