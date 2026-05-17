@@ -87,13 +87,19 @@ async function api(url, options = {}) {
   });
   if (!response.ok) {
     const error = await response.json().catch(() => ({ message: "Request failed." }));
-    throw new Error(error.message || "Request failed.");
+    let msg = error.message || "Request failed.";
+    if (error.errors && Array.isArray(error.errors)) {
+      msg += "\n" + error.errors.join("\n");
+    }
+    throw new Error(msg);
   }
   return response.status === 204 ? null : response.json();
 }
 
 async function submitJson(url, data, method = "POST") {
   try {
+    const valid = Object.values(data).every((v) => v !== null && v !== undefined && v !== "");
+    if (!valid) { notify("Please fill in all required fields.", true); return; }
     await api(url, { method, body: JSON.stringify(data) });
     await refreshAll(false);
     routeTo(state.route, false);
@@ -329,38 +335,69 @@ function renderReports() {
 
 function doctorForm() {
   return formCard("Add New Doctor", "Register a physician with specialization, salary and service years.", "doctorForm", [
-    field("fullName", "Full Name", "text", "Aylin Mammadova"), field("age", "Age", "number", "38"), field("phone", "Phone", "text", "555-0140"), field("specialization", "Specialization", "text", "Cardiology"), field("salary", "Salary", "number", "7600"), field("yearsOfService", "Years", "number", "10"), field("email", "Email", "email", "doctor@hospital.com"),
+    field("fullName", "Full Name", "text", "Aylin Mammadova", { pattern: "[a-zA-Z\\s\\-'.]+", title: "Only letters, spaces, hyphens and apostrophes allowed" }),
+    field("age", "Age", "number", "38", { min: 18, max: 70, title: "Doctor age must be 18-70" }),
+    field("phone", "Phone", "text", "555-0140", { pattern: "^\\+?[\\d\\s\\-\\(\\)]{7,20}$", title: "Valid format: +1234567890" }),
+    field("specialization", "Specialization", "text", "Cardiology", { pattern: "[a-zA-Z\\s]+", title: "Only letters and spaces allowed" }),
+    field("salary", "Salary", "number", "7600", { min: 0, step: "0.01", title: "Must be zero or positive" }),
+    field("yearsOfService", "Years", "number", "10", { min: 0, max: 70, title: "Must be between 0 and 70" }),
+    field("email", "Email", "email", "doctor@hospital.com"),
   ], "Register Doctor");
 }
 
 function patientForm() {
   return formCard("Register Patient", "Create patient profile with emergency, insurance and allergy data.", "patientForm", [
-    field("fullName", "Full Name", "text", "Nigar Aliyeva"), field("age", "Age", "number", "31"), field("phone", "Phone", "text", "555-0310"), field("bloodType", "Blood", "text", "O+"), field("email", "Email", "email", "patient@mail.com"), field("emergencyContact", "Emergency", "text", "Family - 555-9900"), field("insuranceId", "Insurance", "text", "INS-1001"), field("allergies", "Allergies", "text", "Latex, Penicillin"),
+    field("fullName", "Full Name", "text", "Nigar Aliyeva", { pattern: "[a-zA-Z\\s\\-'.]+", title: "Only letters, spaces, hyphens and apostrophes allowed" }),
+    field("age", "Age", "number", "31", { min: 0, max: 100, title: "Patient age must be 0-100" }),
+    field("phone", "Phone", "text", "555-0310", { pattern: "^\\+?[\\d\\s\\-\\(\\)]{7,20}$", title: "Valid format: +1234567890" }),
+    field("bloodType", "Blood", "text", "O+", { pattern: "(A|B|AB|O)[+-]", title: "Must be blood type (A+, B-, O+, etc.)" }),
+    field("email", "Email", "email", "patient@mail.com"),
+    field("emergencyContact", "Emergency", "text", "Family - 555-9900"),
+    field("insuranceId", "Insurance", "text", "INS-1001"),
+    field("allergies", "Allergies", "text", "Latex, Penicillin"),
   ], "Register Patient");
 }
 
 function nurseForm() {
   return formCard("Add New Nurse", "Assign ward, shift and qualification.", "nurseForm", [
-    field("fullName", "Full Name", "text", "Sara Abbasova"), field("age", "Age", "number", "28"), field("phone", "Phone", "text", "555-0240"), field("ward", "Ward", "text", "Emergency Room"), field("shift", "Shift", "select", `<option>Morning</option><option>Evening</option><option>Night</option>`), field("qualification", "Qualification", "text", "RN"), field("email", "Email", "email", "nurse@hospital.com"),
+    field("fullName", "Full Name", "text", "Sara Abbasova", { pattern: "[a-zA-Z\\s\\-'.]+", title: "Only letters, spaces, hyphens and apostrophes allowed" }),
+    field("age", "Age", "number", "28", { min: 18, max: 70, title: "Nurse age must be 18-70" }),
+    field("phone", "Phone", "text", "555-0240", { pattern: "^\\+?[\\d\\s\\-\\(\\)]{7,20}$", title: "Valid format: +1234567890" }),
+    field("ward", "Ward", "text", "Emergency Room"),
+    field("shift", "Shift", "select", `<option>Morning</option><option>Evening</option><option>Night</option>`),
+    field("qualification", "Qualification", "text", "RN"),
+    field("email", "Email", "email", "nurse@hospital.com"),
   ], "Add Nurse");
 }
 
 function appointmentForm() {
   const min = new Date(Date.now() + 60 * 60 * 1000).toISOString().slice(0, 16);
   return formCard("Book Appointment", "Doctor availability and same-day patient rules are enforced by the backend.", "appointmentForm", [
-    field("doctorId", "Doctor", "select", doctorOptions()), field("patientId", "Patient", "select", patientOptions()), `<label class="field"><span>Date and Time</span><input name="dateTime" type="datetime-local" value="${min}" required></label>`, field("reason", "Reason", "text", "Clinical consultation"),
+    field("doctorId", "Doctor", "select", doctorOptions()),
+    field("patientId", "Patient", "select", patientOptions()),
+    `<label class="field"><span>Date and Time</span><input name="dateTime" type="datetime-local" value="${min}" min="${min}" required></label>`,
+    field("reason", "Reason", "text", "Clinical consultation", { pattern: "[a-zA-Z\\s\\-'.]+", title: "Only letters, spaces, hyphens and apostrophes allowed" }),
   ], "Book Appointment");
 }
 
 function departmentForm() {
   return formCard("Create Department", "Capacity controls how many doctors can be assigned.", "departmentForm", [
-    field("name", "Name", "text", "Radiology"), field("capacity", "Capacity", "number", "4"), field("floor", "Floor", "text", "Floor 5"), field("phoneExt", "Phone Ext", "text", "5100"),
+    field("name", "Name", "text", "Radiology", { pattern: "[a-zA-Z\\s\\-'.]+", title: "Only letters, spaces, hyphens and apostrophes allowed" }),
+    field("capacity", "Capacity", "number", "4", { min: 1, max: 100, title: "Must be between 1 and 100" }),
+    field("floor", "Floor", "text", "Floor 5"),
+    field("phoneExt", "Phone Ext", "text", "5100"),
   ], "Create Department");
 }
 
 function recordForm() {
   return formCard("Add Medical Record", "Save diagnosis, treatment, medication and clinical notes.", "recordForm", [
-    field("patientId", "Patient", "select", patientOptions()), field("doctorId", "Doctor", "select", doctorOptions()), field("type", "Type", "select", `<option>Diagnosis</option><option>Surgery</option><option>LabResult</option><option>Prescription</option><option>Consultation</option><option>Emergency</option>`), field("diagnosis", "Diagnosis", "text", "Routine check-up"), field("treatment", "Treatment", "text", "Follow-up care"), field("medication", "Medication", "text", "None"), `<label class="field double"><span>Notes</span><textarea name="notes" placeholder="Additional clinical notes"></textarea></label>`,
+    field("patientId", "Patient", "select", patientOptions()),
+    field("doctorId", "Doctor", "select", doctorOptions()),
+    field("type", "Type", "select", `<option>Diagnosis</option><option>Surgery</option><option>LabResult</option><option>Prescription</option><option>Consultation</option><option>Emergency</option>`),
+    field("diagnosis", "Diagnosis", "text", "Routine check-up", { pattern: "[a-zA-Z\\s\\-'.]+", title: "Only letters, spaces, hyphens and apostrophes allowed" }),
+    field("treatment", "Treatment", "text", "Follow-up care", { pattern: "[a-zA-Z\\s\\-'.]+", title: "Only letters, spaces, hyphens and apostrophes allowed" }),
+    field("medication", "Medication", "text", "None"),
+    `<label class="field double"><span>Notes</span><textarea name="notes" placeholder="Additional clinical notes"></textarea></label>`,
   ], "Save Record");
 }
 
@@ -372,15 +409,22 @@ function quickActionForm(title, id, fields, primary, secondary = "") {
   return `<form class="form-card" id="${id}"><div class="form-head"><div><h3>${title}</h3><p>Fast operational action panel.</p></div></div><div class="form-grid">${fields.join("")}<div class="field"><span>&nbsp;</span><button class="btn" type="submit">${primary}</button></div>${secondary ? `<div class="field"><span>&nbsp;</span><button class="btn ghost" type="button" data-secondary>${secondary}</button></div>` : ""}</div></form>`;
 }
 
-function field(name, label, type, value) {
+function field(name, label, type, value, extra = {}) {
   if (type === "select") return `<label class="field"><span>${label}</span><select name="${name}" required>${value}</select></label>`;
-  return `<label class="field"><span>${label}</span><input name="${name}" type="${type}" placeholder="${escapeHtml(value)}" ${type !== "email" ? "required" : ""}></label>`;
+  let attrs = `name="${name}" type="${type}" placeholder="${escapeHtml(value)}" ${type !== "email" ? "required" : ""}`;
+  if (extra.min !== undefined) attrs += ` min="${extra.min}"`;
+  if (extra.max !== undefined) attrs += ` max="${extra.max}"`;
+  if (extra.pattern) attrs += ` pattern="${escapeHtml(extra.pattern)}"`;
+  if (extra.title) attrs += ` title="${escapeHtml(extra.title)}"`;
+  if (extra.step) attrs += ` step="${extra.step}"`;
+  return `<label class="field"><span>${label}</span><input ${attrs}></label>`;
 }
 
 function wireCommon() {
   wireSearch();
   wireViewButtons();
   wireRouteButtons();
+  wireFieldValidation();
   document.querySelectorAll("[data-delete-doctor]").forEach((btn) => btn.addEventListener("click", async () => {
     if (!confirm("Remove this doctor and cancel future appointments?")) return;
     try {
@@ -412,9 +456,50 @@ function wireForm(selector, handler) {
 function formData(form) {
   const data = Object.fromEntries(new FormData(form).entries());
   Object.keys(data).forEach((key) => {
-    if (["age", "salary", "yearsOfService", "capacity"].includes(key) || key.endsWith("Id")) data[key] = Number(data[key]);
+    if (["age", "salary", "yearsOfService", "capacity"].includes(key) || key.endsWith("Id")) {
+      const num = Number(data[key]);
+      if (isNaN(num)) throw new Error(`"${key}" must be a valid number.`);
+      data[key] = num;
+    }
   });
   return data;
+}
+
+function wireFieldValidation() {
+  document.querySelectorAll(".field input, .field select, .field textarea").forEach((el) => {
+    el.addEventListener("input", () => validateField(el));
+    el.addEventListener("blur", () => validateField(el));
+  });
+}
+
+function validateField(el) {
+  const field = el.closest(".field");
+  if (!field) return;
+  let error = field.querySelector(".field-error");
+  if (!error) {
+    error = document.createElement("span");
+    error.className = "field-error";
+    field.appendChild(error);
+  }
+  if (el.validity.valueMissing) {
+    error.textContent = "This field is required.";
+    field.classList.add("invalid");
+  } else if (el.validity.patternMismatch) {
+    error.textContent = el.title || "Invalid format.";
+    field.classList.add("invalid");
+  } else if (el.validity.rangeUnderflow) {
+    error.textContent = `Minimum value is ${el.min}.`;
+    field.classList.add("invalid");
+  } else if (el.validity.rangeOverflow) {
+    error.textContent = `Maximum value is ${el.max}.`;
+    field.classList.add("invalid");
+  } else if (el.validity.typeMismatch) {
+    error.textContent = el.title || "Invalid format.";
+    field.classList.add("invalid");
+  } else {
+    error.textContent = "";
+    field.classList.remove("invalid");
+  }
 }
 
 function wireSearch() {

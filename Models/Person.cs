@@ -1,10 +1,13 @@
 namespace HospitalApp.Models
 {
-   
+    using System.Text.RegularExpressions;
+
     public abstract class Person
     {
         // ── Static ID Generator ─────────────────────────────────────────────────
         private static int _nextId = 1000;
+        private static readonly Regex _phoneRegex = new(@"^\+?[\d\s\-\(\)]{7,20}$", RegexOptions.Compiled);
+        private static readonly Regex _nameRegex = new(@".*[a-zA-Z].*", RegexOptions.Compiled);
 
         // ── Encapsulated Fields ─────────────────────────────────────────────────
         private string _phone = string.Empty;
@@ -23,7 +26,9 @@ namespace HospitalApp.Models
             {
                 if (string.IsNullOrWhiteSpace(value))
                     throw new ArgumentException("Phone number cannot be empty.");
-                _phone = value;
+                if (!_phoneRegex.IsMatch(value.Trim()))
+                    throw new ArgumentException("Phone number format is invalid. Use digits, spaces, dashes, parentheses, or leading '+'.");
+                _phone = value.Trim();
             }
         }
 
@@ -48,6 +53,10 @@ namespace HospitalApp.Models
         {
             if (string.IsNullOrWhiteSpace(fullName))
                 throw new ArgumentException("Full name cannot be empty.", nameof(fullName));
+            if (!_nameRegex.IsMatch(fullName))
+                throw new ArgumentException("Full name must contain at least one letter.", nameof(fullName));
+            if (!string.IsNullOrEmpty(email) && !email.Contains('@'))
+                throw new ArgumentException("Invalid email format.", nameof(email));
 
             Id           = _nextId++;
             FullName     = fullName.Trim();

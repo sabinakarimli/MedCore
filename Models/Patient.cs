@@ -31,6 +31,8 @@ namespace HospitalApp.Models
                        string bloodType, string email = "")
             : base(fullName, age, phone, email)
         {
+            if (age < 0 || age > 100)
+                throw new ArgumentOutOfRangeException(nameof(age), "Patient age must be between 0 and 100.");
             BloodType = bloodType;
             Status    = PatientStatus.Outpatient;
         }

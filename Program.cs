@@ -2,6 +2,7 @@
 using HospitalApp.Models;
 using HospitalApp.Services;
 using Microsoft.OpenApi.Models;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -76,6 +77,8 @@ app.MapGet("/api/doctors", (HospitalService hospital) =>
 
 app.MapPost("/api/doctors", (HospitalService hospital, CreateDoctorRequest request) =>
 {
+    var err = Validate(request);
+    if (err is not null) return err;
     try
     {
         var doctor = hospital.AddDoctor(
@@ -112,6 +115,8 @@ app.MapGet("/api/patients", (HospitalService hospital) =>
 
 app.MapPost("/api/patients", (HospitalService hospital, CreatePatientRequest request) =>
 {
+    var err = Validate(request);
+    if (err is not null) return err;
     try
     {
         var patient = hospital.AddPatient(request.FullName, request.Age, request.Phone, request.BloodType, request.Email ?? string.Empty);
@@ -164,6 +169,8 @@ app.MapGet("/api/nurses", (HospitalService hospital) =>
 
 app.MapPost("/api/nurses", (HospitalService hospital, CreateNurseRequest request) =>
 {
+    var err = Validate(request);
+    if (err is not null) return err;
     try
     {
         var nurse = hospital.AddNurse(request.FullName, request.Age, request.Phone, request.Ward, request.Shift, request.Qualification, request.Email ?? string.Empty);
@@ -194,6 +201,8 @@ app.MapGet("/api/appointments", (HospitalService hospital) =>
 
 app.MapPost("/api/appointments", (HospitalService hospital, CreateAppointmentRequest request) =>
 {
+    var err = Validate(request);
+    if (err is not null) return err;
     try
     {
         var appointment = hospital.BookAppointment(request.DoctorId, request.PatientId, request.DateTime, request.Reason);
@@ -246,6 +255,8 @@ app.MapGet("/api/departments", (HospitalService hospital) =>
 
 app.MapPost("/api/departments", (HospitalService hospital, CreateDepartmentRequest request) =>
 {
+    var err = Validate(request);
+    if (err is not null) return err;
     try
     {
         var department = hospital.AddDepartment(request.Name, request.Capacity, request.Floor);
@@ -274,6 +285,8 @@ app.MapPost("/api/departments/assign-doctor", (HospitalService hospital, AssignD
 
 app.MapPost("/api/records", (HospitalService hospital, CreateRecordRequest request) =>
 {
+    var err = Validate(request);
+    if (err is not null) return err;
     try
     {
         var record = hospital.AddMedicalRecord(
@@ -298,6 +311,21 @@ app.MapFallbackToFile("index.html");
 app.Run();
 
 static IResult BadRequest(Exception ex) => Results.BadRequest(new { message = ex.Message });
+
+static IResult? Validate(object model)
+{
+    var results = new List<ValidationResult>();
+    var ctx = new ValidationContext(model);
+    if (!Validator.TryValidateObject(model, ctx, results, validateAllProperties: true))
+    {
+        return Results.BadRequest(new
+        {
+            message = "Validation failed.",
+            errors = results.Select(r => r.ErrorMessage)
+        });
+    }
+    return null;
+}
 
 static IEnumerable<string> SplitCsv(string? value) =>
     string.IsNullOrWhiteSpace(value)
@@ -397,15 +425,148 @@ static object ToRecordDto(MedicalRecord record) => new
     createdAt = record.CreatedAt
 };
 
-record CreateDoctorRequest(string FullName, int Age, string Phone, string Specialization, decimal Salary, int YearsOfService, string? Email);
-record CreatePatientRequest(string FullName, int Age, string Phone, string BloodType, string? Email, string? EmergencyContact, string? InsuranceId, string? Allergies);
-record AdmitPatientRequest(string Ward, bool IsCritical);
-record CreateNurseRequest(string FullName, int Age, string Phone, string Ward, ShiftType Shift, string Qualification, string? Email);
-record AssignTaskRequest(string Task);
-record CreateAppointmentRequest(int DoctorId, int PatientId, DateTime DateTime, string Reason);
-record UpdateAppointmentStatusRequest(AppointmentStatus Status, string? Notes);
-record CreateDepartmentRequest(string Name, int Capacity, string Floor, string? PhoneExt);
-record AssignDoctorRequest(int DoctorId, string DepartmentName);
-record CreateRecordRequest(int PatientId, int DoctorId, string Diagnosis, string Treatment, string Medication, RecordType Type, string? Notes);
+record CreateDoctorRequest(
+    [Required(ErrorMessage = "Full name is required.")]
+    [StringLength(100, MinimumLength = 2, ErrorMessage = "Full name must be 2-100 characters.")]
+    [RegularExpression(@".*[a-zA-Z].*", ErrorMessage = "Full name must contain at least one letter.")]
+    string FullName,
+
+    [Range(18, 70, ErrorMessage = "Doctor age must be between 18 and 70.")]
+    int Age,
+
+    [Required(ErrorMessage = "Phone is required.")]
+    [RegularExpression(@"^\+?[\d\s\-\(\)]{7,20}$", ErrorMessage = "Invalid phone format.")]
+    string Phone,
+
+    [Required(ErrorMessage = "Specialization is required.")]
+    [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Specialization must contain only letters.")]
+    string Specialization,
+
+    [Range(0, 999999, ErrorMessage = "Salary cannot be negative.")]
+    decimal Salary,
+
+    [Range(0, 70, ErrorMessage = "Years of service must be 0-70.")]
+    int YearsOfService,
+
+    [EmailAddress(ErrorMessage = "Invalid email format.")]
+    string? Email);
+
+record CreatePatientRequest(
+    [Required(ErrorMessage = "Full name is required.")]
+    [StringLength(100, MinimumLength = 2, ErrorMessage = "Full name must be 2-100 characters.")]
+    [RegularExpression(@"^[a-zA-Z\s\-'.]+$", ErrorMessage = "Full name can only contain letters, spaces, hyphens and apostrophes.")]
+    string FullName,
+
+    [Range(0, 100, ErrorMessage = "Patient age must be between 0 and 100.")]
+    int Age,
+
+    [Required(ErrorMessage = "Phone is required.")]
+    [RegularExpression(@"^\+?[\d\s\-\(\)]{7,20}$", ErrorMessage = "Invalid phone format.")]
+    string Phone,
+
+    [Required(ErrorMessage = "Blood type is required.")]
+    [RegularExpression(@"^(A|B|AB|O)[+-]$", ErrorMessage = "Blood type must be like A+, B-, O+, AB+.")]
+    string BloodType,
+
+    [EmailAddress(ErrorMessage = "Invalid email format.")]
+    string? Email,
+
+    string? EmergencyContact,
+    string? InsuranceId,
+    string? Allergies);
+
+record AdmitPatientRequest(
+    [Required(ErrorMessage = "Ward name is required.")]
+    string Ward,
+    bool IsCritical);
+
+record CreateNurseRequest(
+    [Required(ErrorMessage = "Full name is required.")]
+    [StringLength(100, MinimumLength = 2, ErrorMessage = "Full name must be 2-100 characters.")]
+    [RegularExpression(@"^[a-zA-Z\s\-'.]+$", ErrorMessage = "Full name can only contain letters, spaces, hyphens and apostrophes.")]
+    string FullName,
+
+    [Range(18, 70, ErrorMessage = "Nurse age must be between 18 and 70.")]
+    int Age,
+
+    [Required(ErrorMessage = "Phone is required.")]
+    [RegularExpression(@"^\+?[\d\s\-\(\)]{7,20}$", ErrorMessage = "Invalid phone format.")]
+    string Phone,
+
+    [Required(ErrorMessage = "Ward is required.")]
+    string Ward,
+
+    [Required(ErrorMessage = "Shift is required.")]
+    ShiftType Shift,
+
+    [Required(ErrorMessage = "Qualification is required.")]
+    string Qualification,
+
+    [EmailAddress(ErrorMessage = "Invalid email format.")]
+    string? Email);
+
+record AssignTaskRequest(
+    [Required(ErrorMessage = "Task description is required.")]
+    string Task);
+
+record CreateAppointmentRequest(
+    [Required(ErrorMessage = "Doctor ID is required.")]
+    int DoctorId,
+
+    [Required(ErrorMessage = "Patient ID is required.")]
+    int PatientId,
+
+    [Required(ErrorMessage = "Date and time is required.")]
+    DateTime DateTime,
+
+    [Required(ErrorMessage = "Reason is required.")]
+    [RegularExpression(@"^[a-zA-Z\s\-'.]+$", ErrorMessage = "Reason can only contain letters, spaces, hyphens and apostrophes.")]
+    string Reason);
+
+record UpdateAppointmentStatusRequest(
+    [Required(ErrorMessage = "Status is required.")]
+    AppointmentStatus Status,
+    string? Notes);
+
+record CreateDepartmentRequest(
+    [Required(ErrorMessage = "Department name is required.")]
+    [RegularExpression(@"^[a-zA-Z\s\-'.]+$", ErrorMessage = "Name can only contain letters, spaces, hyphens and apostrophes.")]
+    string Name,
+
+    [Range(1, 100, ErrorMessage = "Capacity must be between 1 and 100.")]
+    int Capacity,
+
+    [Required(ErrorMessage = "Floor is required.")]
+    string Floor,
+    string? PhoneExt);
+
+record AssignDoctorRequest(
+    [Required(ErrorMessage = "Doctor ID is required.")]
+    int DoctorId,
+
+    [Required(ErrorMessage = "Department name is required.")]
+    string DepartmentName);
+
+record CreateRecordRequest(
+    [Required(ErrorMessage = "Patient ID is required.")]
+    int PatientId,
+
+    [Required(ErrorMessage = "Doctor ID is required.")]
+    int DoctorId,
+
+    [Required(ErrorMessage = "Diagnosis is required.")]
+    [RegularExpression(@"^[a-zA-Z\s\-'.]+$", ErrorMessage = "Diagnosis can only contain letters, spaces, hyphens and apostrophes.")]
+    string Diagnosis,
+
+    [Required(ErrorMessage = "Treatment is required.")]
+    [RegularExpression(@"^[a-zA-Z\s\-'.]+$", ErrorMessage = "Treatment can only contain letters, spaces, hyphens and apostrophes.")]
+    string Treatment,
+
+    [Required(ErrorMessage = "Medication is required.")]
+    string Medication,
+
+    RecordType Type,
+
+    string? Notes);
 
 

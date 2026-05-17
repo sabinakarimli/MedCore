@@ -25,6 +25,8 @@ namespace HospitalApp.Models
                      string qualification = "RN", string email = "")
             : base(fullName, age, phone, email)
         {
+            if (age < 18 || age > 70)
+                throw new ArgumentOutOfRangeException(nameof(age), "Nurse age must be between 18 and 70.");
             Ward          = ward;
             Shift         = shift;
             Qualification = qualification;

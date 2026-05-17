@@ -24,6 +24,10 @@ namespace HospitalApp.Models
         {
             if (string.IsNullOrWhiteSpace(diagnosis))
                 throw new ArgumentException("Diagnosis cannot be empty.");
+            if (string.IsNullOrWhiteSpace(treatment))
+                throw new ArgumentException("Treatment cannot be empty.");
+            if (string.IsNullOrWhiteSpace(medication))
+                throw new ArgumentException("Medication cannot be empty.");
 
             ArgumentNullException.ThrowIfNull(issuedBy);
 

@@ -39,6 +39,8 @@ namespace HospitalApp.Models
                       int yearsOfService = 0, string email = "")
             : base(fullName, age, phone, email)
         {
+            if (age < 18 || age > 70)
+                throw new ArgumentOutOfRangeException(nameof(age), "Doctor age must be between 18 and 70.");
             Specialization = specialization;
             Salary         = salary;
             YearsOfService = yearsOfService;

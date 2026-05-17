@@ -27,7 +27,8 @@ namespace HospitalApp.Models
 
             if (string.IsNullOrWhiteSpace(reason))
                 throw new ArgumentException("Appointment reason cannot be empty.");
-
+            if (reason.Trim().Length < 3)
+                throw new ArgumentException("Appointment reason must be at least 3 characters.");
             if (dateTime < DateTime.Now)
                 throw new ArgumentException("Appointment cannot be scheduled in the past.");
 
